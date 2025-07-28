@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Zone - User UI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+        :root {
+            --primary-color: #6d28d9; --secondary-color: #db2777; --card-background: rgba(31, 41, 55, 0.5); 
+            --text-color: #f3f4f6; --sidebar-width: 280px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: var(--text-color); min-height: 100vh; overflow-x: hidden; }
+        body.sidebar-open { overflow: hidden; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px 0; }
+        .page { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .main-header{padding:10px 0;position:sticky;top:0;z-index:100;background:rgba(17,24,39,.6);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1)}
+        .navbar{display:flex;justify-content:space-between;align-items:center}
+        
+        .logo{ font-family: 'Audiowide', sans-serif; font-size:1.8rem; font-weight:700; letter-spacing:1px; color: #FFC300; text-shadow: 0 0 15px rgba(255, 195, 0, 0.7); }
+        .logo span { color: #E60023; text-shadow: 0 0 15px rgba(230, 0, 35, 0.7); }
+        
+        .menu-btn{background:0 0;border:none;cursor:pointer;padding:5px}
+        .menu-btn svg{stroke:var(--text-color);transition:stroke .3s ease; width:28px; height:28px;}
+        .menu-btn:hover svg{stroke:var(--secondary-color)}
+        .page-header{display:flex;align-items:center;margin-bottom:30px;padding-top:40px}
+        .back-btn{background:var(--card-background);border:1px solid rgba(255,255,255,.1);color:var(--text-color);padding:10px 12px;border-radius:50%;cursor:pointer;margin-right:20px;transition:background-color .3s ease}
+        .back-btn:hover{background-color:var(--primary-color)}
+        .page-title{font-size:2.2rem;font-weight:600}
+        #sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-width); height: 100%; background: #111827; z-index: 1001; transform: translateX(calc(-1 * var(--sidebar-width))); transition: transform 0.3s ease-in-out; padding: 20px; }
+        #sidebar.open { transform: translateX(0); }
+        #sidebar .close-sidebar-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; }
+        #sidebar .close-sidebar-btn svg { stroke: var(--text-color); width: 24px; height: 24px;}
+        
+        #sidebar .sidebar-logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 40px; color: #FFC300; text-shadow: 0 0 15px rgba(255, 195, 0, 0.7); }
+        #sidebar .sidebar-logo span { color: #E60023; text-shadow: 0 0 15px rgba(230, 0, 35, 0.7); }
+        
+        #sidebar a { display: block; color: var(--text-color); text-decoration: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; transition: background-color 0.3s; }
+        #sidebar a:hover { background-color: var(--primary-color); }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; }
+        #overlay.show { display: block; }
+        #order-status-result { margin-top: 30px; padding: 20px; background: var(--card-background); border-radius: 12px; border: 1px solid rgba(255,255,255,.1); display: none; }
+        #order-status-result p { margin-bottom: 10px; font-size: 1.1rem; }
+        #order-status-result span { font-weight: 600; color: #a5b4fc; }
+        .status-pending { color: #facc15 !important; } .status-processing { color: #60a5fa !important; } .status-completed { color: #4ade80 !important; } .status-cancelled { color: #f87171 !important; }
+
+        .notice-bar { width: 100%; background-color: #ffc107; color: #212529; padding: 8px 0; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .notice-bar p { display: inline-block; padding-left: 100%; animation: scroll-notice 30s linear infinite; font-weight: 500; }
+        @keyframes scroll-notice { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .news-slider-section { padding-top: 20px; }
+
+        .news-slider { width: 100%; height: 250px; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.4); position: relative; }
+        .slider-track { width: 100%; height: 100%; cursor: grab; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
+        .slide.active { opacity: 1; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
+
+        .game-section{padding:40px 0} .section-title{text-align:center;font-size:2.5rem;margin-bottom:40px;font-weight:600} .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px} .game-card{background:var(--card-background);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 5px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;cursor:pointer} .game-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 15px 30px rgba(0,0,0,.4),0 0 50px var(--secondary-color)} .card-banner img{width:100%;height:110px;object-fit:cover;display:block} .card-content{padding:15px;text-align:center} .card-content h3{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .form-container{background:var(--card-background);border-radius:12px;padding:25px;margin-bottom:30px;max-width:700px;margin-left:auto;margin-right:auto} .form-group{margin-bottom:20px} .form-group label{display:block;font-size:1.1rem;font-weight:500;margin-bottom:10px} .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="tel"] {width:100%;padding:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-color);font-size:1rem;}
+        
+        /* --- PACKAGE GRID CSS (MODIFIED FOR SMALLER CARDS) --- */
+        .package-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px} 
+        .package-card{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:border-color .3s ease,transform .3s ease} 
+        .package-card:hover{transform:translateY(-5px);border-color:var(--secondary-color)} 
+        .package-card.selected{border-color:var(--primary-color);box-shadow:0 0 15px var(--primary-color)} 
+        .package-name{font-size:1rem; font-weight:600; line-height: 1.3;} 
+        .package-price{font-size:0.9rem; color:#c7d2fe; margin-top:4px} 
+        /* --- END OF PACKAGE GRID CSS --- */
+
+        .payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .payment-option{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:10px;padding:15px;text-align:center;cursor:pointer;transition:border-color .3s ease} .payment-option:hover{border-color:var(--secondary-color)} .payment-option.selected{border-color:var(--primary-color);box-shadow:0 0 15px var(--primary-color)} .payment-option img{height:30px; max-width: 100%;} .payment-option input[type="radio"]{display:none} #payment-instruction-wrapper, #payment-details {display: none;margin-top: 20px;padding-top: 20px;border-top: 1px solid rgba(255, 255, 255, 0.1);} .copyable-input-wrapper { display: flex; align-items: center; gap: 10px; } .copyable-input-wrapper input { cursor: default; } #copy-btn { padding: 10px 15px; background: var(--secondary-color); border: none; border-radius: 8px; color: white; font-weight: 500; cursor: pointer; white-space: nowrap; } .action-btn{width:100%;padding:15px;margin-top:10px;background:linear-gradient(90deg,var(--primary-color),var(--secondary-color));border:none;border-radius:8px;color:#fff;font-size:1.2rem;font-weight:600;cursor:pointer;transition:transform .3s ease} .action-btn:hover{transform:scale(1.02)}
+        .action-btn:disabled { background: var(--card-background); cursor: not-allowed; opacity: 0.5; }
+        footer{text-align:center;padding:20px 0;margin-top:50px;border-top:1px solid rgba(255,255,255,.1);color:#9ca3af}
+    </style>
+</head>
+<body>
+    <div id="overlay"></div>
+    <aside id="sidebar">
+        <button class="close-sidebar-btn" aria-label="Close menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        <div class="sidebar-logo">Game<span>Zone</span></div>
+        <a href="#" id="nav-order-status">Order Status</a>
+    </aside>
+
+    <header class="main-header">
+        <nav class="navbar container">
+            <div class="logo">Game<span>Zone</span></div>
+            <button class="menu-btn" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+        </nav>
+    </header>
+
+    <div class="notice-bar">
+        <p>Loading notice...</p>
+    </div>
+
+    <main class="container">
+        <div id="homepage" class="page active">
+            <section class="news-slider-section"><div class="news-slider"><div class="slider-track" id="slider-track"></div></div></section>
+            <section class="game-section"><h2 class="section-title">All Item</h2><div class="game-grid" id="game-grid"></div></section>
+        </div>
+
+        <div id="package-page" class="page">
+            <div class="page-header"><button id="back-to-home-from-pkg" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button><h2 id="package-game-title" class="page-title"></h2></div>
+            <div class="form-container">
+                <div class="form-group"><label for="player-id">আপনার প্লেয়ার আইডি দিন</label><input type="text" id="player-id" placeholder="এখানে আইডি লিখুন"></div>
+                <div class="form-group"><label>একটি প্যাকেজ বেছে নিন</label><div id="package-grid" class="package-grid"></div></div>
+                <button id="checkout-btn" class="action-btn">অর্ডার করুন</button>
+            </div>
+        </div>
+        
+        <div id="checkout-page" class="page">
+            <div class="page-header"><button id="back-to-packages" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button><h2 class="page-title">অর্ডার ডিটেইলস</h2></div>
+            <div class="form-container">
+                <div class="form-group"><label for="first-name">First Name</label><input type="text" id="first-name" placeholder="আপনার নামের প্রথম অংশ"></div>
+                <div class="form-group"><label for="last-name">Last Name</label><input type="text" id="last-name" placeholder="আপনার নামের শেষ অংশ"></div>
+                <div class="form-group"><label for="email">Email</label><input type="email" id="email" placeholder="আপনার ইমেইল অ্যাড্রেস"></div>
+                <div class="form-group"><label>পেমেন্ট মেথড</label><div class="payment-options"></div></div>
+                <div id="payment-instruction-wrapper">
+                    <div class="form-group">
+                        <label id="payment-instruction-label">এই নাম্বারে টাকা সেন্ড মানি করুন</label>
+                        <div class="copyable-input-wrapper"><input type="text" id="payment-target-number" value="Loading..." readonly><button type="button" id="copy-btn">কপি</button></div>
+                    </div>
+                </div>
+                <div id="payment-details"><div class="form-group"><label for="payment-number">আপনার পেমেন্ট নম্বর</label><input type="tel" id="payment-number" placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন"></div><div class="form-group"><label for="trx-id">ট্রানজেকশন আইডি (TrxID)</label><input type="text" id="trx-id" placeholder="পেমেন্টের ট্রানজেকশন আইডি"></div></div>
+                <button id="confirm-order-btn" class="action-btn">Confirm</button>
+            </div>
+        </div>
+
+        <div id="order-status-page" class="page">
+            <div class="page-header"><button id="back-to-home-from-status" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button><h2 class="page-title">Order Status</h2></div>
+            <div class="form-container">
+                <div class="form-group"><label for="order-id-input">আপনার অর্ডার আইডি দিন</label><input type="text" id="order-id-input" placeholder="এখানে অর্ডার আইডি দিন "></div>
+                <button id="check-status-btn" class="action-btn">Check Status</button>
+                <div id="order-status-result"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer><p>© 2025 Eagle Zone. সর্বস্বত্ব সংরক্ষিত।</p></footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getFirestore, collection, serverTimestamp, getDocs, doc, getDoc, query, orderBy, runTransaction, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAAMf_SeR061JLxfKorrcgFROawnDPDG_w", authDomain: "topup-2ecf4.firebaseapp.com", projectId: "topup-2ecf4", storageBucket: "topup-2ecf4.appspot.com", messagingSenderId: "48541449027", appId: "1:48541449027:web:080401b897cc0748dccdf6" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const pages = document.querySelectorAll('.page');
+        const sliderTrack = document.getElementById('slider-track');
+        const gameGrid = document.getElementById('game-grid');
+        const packageGameTitle = document.getElementById('package-game-title');
+        const packageGrid = document.getElementById('package-grid');
+        const playerIdInput = document.getElementById('player-id');
+        const paymentOptionsContainer = document.querySelector('.payment-options');
+        const paymentInstructionWrapper = document.getElementById('payment-instruction-wrapper');
+        const paymentDetailsDiv = document.getElementById('payment-details');
+        const copyBtn = document.getElementById('copy-btn');
+        const paymentTargetNumberInput = document.getElementById('payment-target-number');
+        const menuBtn = document.querySelector('.menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const closeSidebarBtn = document.querySelector('.close-sidebar-btn');
+        const navOrderStatus = document.getElementById('nav-order-status');
+        const checkStatusBtn = document.getElementById('check-status-btn');
+        const orderIdInput = document.getElementById('order-id-input');
+        const orderStatusResultDiv = document.getElementById('order-status-result');
+        const noticeBarText = document.querySelector('.notice-bar p');
+
+        let selectedPackageInfo = null;
+        let selectedPaymentMethod = null;
+        let orderData = {};
+        
+        let slideInterval;
+        let slides = [];
+        let currentSlide = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function showPage(pageId) { window.scrollTo(0, 0); pages.forEach(page => page.classList.remove('active')); document.getElementById(pageId)?.classList.add('active'); }
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('show'); document.body.classList.add('sidebar-open'); }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); document.body.classList.remove('sidebar-open'); }
+
+        function showSlide(index) {
+            if (slides.length === 0) return;
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function startSlideshow() {
+            if (slides.length <= 1) return;
+            clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                const nextIndex = (currentSlide + 1) % slides.length;
+                showSlide(nextIndex);
+            }, 5000);
+        }
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchStartX - touchEndX > swipeThreshold) {
+                const nextIndex = (currentSlide + 1) % slides.length;
+                showSlide(nextIndex);
+                startSlideshow();
+            } else if (touchEndX - touchStartX > swipeThreshold) {
+                const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(prevIndex);
+                startSlideshow();
+            }
+        }
+
+        async function loadNotice() {
+            try {
+                const noticeDocRef = doc(db, "settings", "notice");
+                const noticeDocSnap = await getDoc(noticeDocRef);
+                if (noticeDocSnap.exists() && noticeDocSnap.data().text) {
+                    noticeBarText.textContent = noticeDocSnap.data().text;
+                } else {
+                    noticeBarText.textContent = "আমাদের ওয়েবসাইটে আপনাকে স্বাগতম! যেকোনো সমস্যায় আমাদের টেলিগ্রামে যোগাযোগ করুন।";
+                }
+            } catch (error) {
+                console.error("Error loading notice:", error);
+                noticeBarText.textContent = "নোটিশ লোড করা সম্ভব হয়নি।";
+            }
+        }
+
+        async function loadHomepageData() {
+            try {
+                const [bannerSnapshot, gameSnapshot] = await Promise.all([ getDocs(query(collection(db, "banners"), orderBy("createdAt", "desc"))), getDocs(query(collection(db, "games"), orderBy("name"))) ]);
+                
+                sliderTrack.innerHTML = ''; 
+                const banners = bannerSnapshot.docs.map(doc => doc.data());
+                
+                if (banners.length > 0) {
+                    banners.forEach(banner => { 
+                        const slideEl = document.createElement('div'); 
+                        slideEl.className = 'slide'; 
+                        slideEl.innerHTML = `<img src="${banner.imageUrl}" alt="News Banner">`; 
+                        sliderTrack.appendChild(slideEl); 
+                    });
+                    
+                    slides = document.querySelectorAll('#slider-track .slide');
+                    showSlide(0);
+                    startSlideshow();
+                }
+                
+                gameGrid.innerHTML = '';
+                gameSnapshot.forEach((doc) => { const game = doc.data(); const gameCard = document.createElement('div'); gameCard.className = 'game-card'; gameCard.dataset.gameId = doc.id; gameCard.innerHTML = `<div class="card-banner"><img src="${game.imageUrl}" alt="${game.name}"></div><div class="card-content"><h3>${game.name}</h3></div>`; gameGrid.appendChild(gameCard); });
+            } catch (error) { console.error("Error loading homepage:", error); }
+        }
+
+        sliderTrack.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        sliderTrack.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        async function showPackagePage(gameId) {
+            packageGameTitle.textContent = "Loading..."; showPage('package-page');
+            try {
+                const gameDoc = await getDoc(doc(db, "games", gameId)); if (!gameDoc.exists()) return;
+                const gameData = gameDoc.data(); orderData.game = gameData.name; packageGameTitle.textContent = `${gameData.name} Packages`;
+                const packagesSnapshot = await getDocs(query(collection(db, "games", gameId, "packages"), orderBy("price")));
+                packageGrid.innerHTML = ''; selectedPackageInfo = null;
+                document.getElementById('checkout-btn').style.cssText = 'opacity: 0.5; cursor: not-allowed;';
+                packagesSnapshot.forEach((pkgDoc) => {
+                    const pkg = pkgDoc.data(); const card = document.createElement('div'); card.className = 'package-card';
+                    card.innerHTML = `<div class="package-name">${pkg.name}</div><div class="package-price">${pkg.price} BDT</div>`;
+                    card.addEventListener('click', () => {
+                        packageGrid.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
+                        selectedPackageInfo = { ...pkg, id: pkgDoc.id };
+                        document.getElementById('checkout-btn').style.cssText = 'opacity: 1; cursor: pointer;';
+                    });
+                    packageGrid.appendChild(card);
+                });
+            } catch (error) { console.error("Error loading packages:", error); }
+        }
+
+        async function loadSettings() {
+            try {
+                const settingsDoc = await getDoc(doc(db, "settings", "paymentNumbers"));
+                if (settingsDoc.exists()) {
+                    const numbers = settingsDoc.data();
+                    paymentOptionsContainer.innerHTML = Object.keys(numbers).map(key => {
+                        const logos = { bkash: 'https://i.ibb.co/JkGCyB4/bkash.png', nagad: 'https://i.ibb.co/qMsP9g0/nagad.png', rocket: 'https://i.ibb.co/9G3Y8Jt/rocket.png' };
+                        const displayName = key.charAt(0).toUpperCase() + key.slice(1);
+                        return `<label class="payment-option"><input type="radio" name="payment-method" value="${displayName}"><img src="${logos[key.toLowerCase()]}" alt="${displayName}"></label>`;
+                    }).join('');
+                }
+            } catch (error) { console.error("Error loading settings:", error); }
+        }
+
+        menuBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+        document.getElementById('back-to-home-from-pkg').addEventListener('click', () => showPage('homepage'));
+        document.getElementById('back-to-home-from-status').addEventListener('click', () => showPage('homepage'));
+        document.getElementById('back-to-packages').addEventListener('click', () => showPage('package-page'));
+        gameGrid.addEventListener('click', (e) => { const card = e.target.closest('.game-card'); if(card && card.dataset.gameId) showPackagePage(card.dataset.gameId); });
+        navOrderStatus.addEventListener('click', (e) => { e.preventDefault(); closeSidebar(); showPage('order-status-page'); orderStatusResultDiv.style.display = 'none'; orderIdInput.value = ''; });
+
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            if (!playerIdInput.value.trim()) { alert('Please enter your player ID.'); return; }
+            if (!selectedPackageInfo) { alert('Please select a package.'); return; }
+            orderData.playerId = playerIdInput.value.trim();
+            document.getElementById('payment-instruction-label').textContent = `${selectedPackageInfo.price}৳ টাকা এই নাম্বারে সেন্ড মানি করুন`;
+            showPage('checkout-page');
+        });
+
+        checkStatusBtn.addEventListener('click', async () => {
+            const orderId = orderIdInput.value.trim(); if (!orderId) { alert("Please enter your Order ID."); return; }
+            orderStatusResultDiv.style.display = 'block'; orderStatusResultDiv.innerHTML = `<p>Loading...</p>`;
+            try {
+                const orderDocRef = doc(db, "orders", orderId); const orderDocSnap = await getDoc(orderDocRef);
+                if (orderDocSnap.exists()) {
+                    const order = orderDocSnap.data(); const statusClass = `status-${order.status.toLowerCase()}`;
+                    orderStatusResultDiv.innerHTML = `<p><strong>Player ID:</strong> <span>${order.playerId}</span></p><p><strong>Game:</strong> <span>${order.game}</span></p><p><strong>Package:</strong> <span>${order.packageName}</span></p><p><strong>Status:</strong> <span class="${statusClass}">${order.status}</span></p>`;
+                } else { orderStatusResultDiv.innerHTML = `<p style="color: var(--danger);">Order not found.</p>`; }
+            } catch (error) { console.error("Error fetching order status:", error); orderStatusResultDiv.innerHTML = `<p style="color: var(--danger);">An error occurred.</p>`; }
+        });
+        
+        paymentOptionsContainer.addEventListener('click', async (e) => {
+            const option = e.target.closest('.payment-option'); if (!option) return;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected')); option.classList.add('selected');
+            selectedPaymentMethod = option.querySelector('input').value;
+            try {
+                const settingsDoc = await getDoc(doc(db, "settings", "paymentNumbers"));
+                if (settingsDoc.exists()) { const numbers = settingsDoc.data(); paymentTargetNumberInput.value = numbers[selectedPaymentMethod.toLowerCase()] || 'N/A'; }
+            } catch(err) { paymentTargetNumberInput.value = 'Failed to load'; }
+            paymentInstructionWrapper.style.display = 'block'; paymentDetailsDiv.style.display = 'block';
+        });
+
+        copyBtn.addEventListener('click', () => { navigator.clipboard.writeText(paymentTargetNumberInput.value).then(() => { copyBtn.textContent = 'Copied!'; setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000); }, () => alert('Failed to copy.')); });
+
+        document.getElementById('confirm-order-btn').addEventListener('click', async () => {
+            const personalInfo = { firstName: document.getElementById('first-name').value.trim(), lastName: document.getElementById('last-name').value.trim(), email: document.getElementById('email').value.trim() };
+            const paymentInfo = { number: document.getElementById('payment-number').value.trim(), trxId: document.getElementById('trx-id').value.trim() };
+            if (!personalInfo.firstName || !personalInfo.email || !selectedPaymentMethod || !paymentInfo.number || !paymentInfo.trxId) { alert("Please fill all required fields."); return; }
+            
+            const newOrderData = {
+                game: orderData.game, playerId: orderData.playerId, packageName: selectedPackageInfo.name, price: selectedPackageInfo.price,
+                customerName: `${personalInfo.firstName} ${personalInfo.lastName}`, customerEmail: personalInfo.email,
+                paymentMethod: selectedPaymentMethod, paymentNumber: paymentInfo.number, transactionId: paymentInfo.trxId,
+                status: 'Pending', orderDate: serverTimestamp()
+            };
+
+            const confirmBtn = document.getElementById('confirm-order-btn');
+            confirmBtn.disabled = true; confirmBtn.textContent = 'Processing...';
+
+            try {
+                const counterRef = doc(db, "counters", "orderCounter");
+                const newOrderId = await runTransaction(db, async (transaction) => {
+                    const counterDoc = await transaction.get(counterRef);
+                    if (!counterDoc.exists()) throw "Counter document not found!";
+                    const newId = counterDoc.data().lastId + 1;
+                    transaction.update(counterRef, { lastId: newId });
+                    const newOrderRef = doc(db, "orders", String(newId));
+                    transaction.set(newOrderRef, newOrderData);
+                    return newId;
+                });
+
+                alert(`আপনার অর্ডার সম্পন্ন জমা হয়েছে✅\n\nYour Player Uid: ${newOrderData.playerId}\nYour Oder ID: ${newOrderId}\n\n১২০ মিনিটের মধ্যে অর্ডার না পেলে আমাদের টেলিগ্রামে যোগাযোগ করুন।`);
+                
+                document.getElementById('checkout-page').querySelectorAll('input').forEach(input => input.value = '');
+                document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                paymentInstructionWrapper.style.display = 'none';
+                paymentDetailsDiv.style.display = 'none';
+                showPage('homepage');
+
+            } catch (e) {
+                console.error("Transaction failed: ", e);
+                alert("দুঃখিত, একটি সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।");
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Confirm';
+            }
+        });
+        
+        loadHomepageData();
+        loadSettings();
+        loadNotice();
+        showPage('homepage');
+    </script>
+</body>
+</html>
