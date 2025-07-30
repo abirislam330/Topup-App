@@ -70,9 +70,23 @@
         .package-card:hover{transform:translateY(-5px);border-color:var(--secondary-color)} 
         .package-card.selected{ background: linear-gradient(90deg, #E60023, #FFC300); border-color: #FFC300; box-shadow: 0 0 15px #FFC300; transform: translateY(-5px); }
         .package-name{font-size:1rem; font-weight:600; line-height: 1.3; color: var(--text-color); transition: color .3s ease;} 
-        .package-card.selected .package-name { color: #ffffff; }
-        .package-price { font-size: 1rem; color: var(--success-color); margin-top: 4px; font-weight: 600; transition: color .3s ease; }
-        .package-card.selected .package-price { color: #ffffff; }
+        
+        /* === CSS CHANGE 1: Selected Package Name color changed to Yellow === */
+        .package-card.selected .package-name { 
+            color: #FFC300; 
+        }
+
+        /* === CSS CHANGE 2: Package Price color changed to Yellow === */
+        .package-price { 
+            font-size: 1rem; 
+            color: #FFC300; /* Bright Yellow color */
+            margin-top: 4px; 
+            font-weight: 600; 
+            transition: color .3s ease; 
+        }
+        .package-card.selected .package-price { 
+            color: #ffffff; /* Price becomes white when selected for better contrast */
+        }
         
         .payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .payment-option{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:10px;padding:15px;text-align:center;cursor:pointer;transition: all .3s ease} 
         .payment-option:hover{border-color:var(--secondary-color)} 
