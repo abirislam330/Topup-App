@@ -69,23 +69,26 @@
         .package-card{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition: all .3s ease} 
         .package-card:hover{transform:translateY(-5px);border-color:var(--secondary-color)} 
         .package-card.selected{ background: linear-gradient(90deg, #E60023, #FFC300); border-color: #FFC300; box-shadow: 0 0 15px #FFC300; transform: translateY(-5px); }
-        .package-name{font-size:1rem; font-weight:600; line-height: 1.3; color: var(--text-color); transition: color .3s ease;} 
         
-        /* === CSS CHANGE 1: Selected Package Name color changed to Yellow === */
-        .package-card.selected .package-name { 
-            color: #FFC300; 
+        .package-name {
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #FFC300;
+            transition: color .3s ease;
         }
-
-        /* === CSS CHANGE 2: Package Price color changed to Yellow === */
+        .package-card.selected .package-name { 
+            color: #ffffff;
+        }
         .package-price { 
             font-size: 1rem; 
-            color: #FFC300; /* Bright Yellow color */
+            color: #22d3ee;
             margin-top: 4px; 
             font-weight: 600; 
             transition: color .3s ease; 
         }
         .package-card.selected .package-price { 
-            color: #ffffff; /* Price becomes white when selected for better contrast */
+            color: #ffffff;
         }
         
         .payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .payment-option{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:10px;padding:15px;text-align:center;cursor:pointer;transition: all .3s ease} 
@@ -157,7 +160,6 @@
             70% { box-shadow: 0 0 0 15px rgba(219, 39, 119, 0); }
             100% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0); }
         }
-
     </style>
 </head>
 <body>
@@ -171,7 +173,7 @@
     <header class="main-header">
         <nav class="navbar container">
             <div class="logo">Game<span>Zone</span></div>
-            <button class="menu-btn" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <button class="menu-btn" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="20" y2="18"></line></svg></button>
         </nav>
     </header>
 
@@ -279,7 +281,7 @@
         function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); document.body.classList.remove('sidebar-open'); }
         function showSlide(index) { if (slides.length === 0) return; slides.forEach(slide => slide.classList.remove('active')); currentSlide = index; slides[currentSlide].classList.add('active'); }
         function startSlideshow() { if (slides.length <= 1) return; clearInterval(slideInterval); slideInterval = setInterval(() => { showSlide((currentSlide + 1) % slides.length); }, 5000); }
-        function handleSwipe() { const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) { showSlide((currentSlide + 1) % slides.length); startSlideshow(); } else if (touchEndX - touchStartX > swipeThreshold) { showSlide((currentSlide - 1 + slides.length) % slides.length); startSlideshow(); } }
+        function handleSwipe() { const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) { showSlide((currentSlide + 1) % slides.length); startSlideshow(); } else if (touchEndX - startStartX > swipeThreshold) { showSlide((currentSlide - 1 + slides.length) % slides.length); startSlideshow(); } }
         async function loadNotice() { try { const noticeDocRef = doc(db, "settings", "notice"); const noticeDocSnap = await getDoc(noticeDocRef); noticeBarText.textContent = (noticeDocSnap.exists() && noticeDocSnap.data().text) ? noticeDocSnap.data().text : "আমাদের ওয়েবসাইটে আপনাকে স্বাগতম!"; } catch (error) { console.error("Error loading notice:", error); noticeBarText.textContent = "নোটিশ লোড করা সম্ভব হয়নি।"; } }
 
         function renderGames(gamesToRender) {
@@ -461,6 +463,40 @@
             button.addEventListener('click', (e) => { if (hasMoved) { e.preventDefault(); } });
         }
         
+        function fallbackCopyTextToClipboard(text, buttonElement, originalText) {
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = text;
+            tempTextArea.style.position = "fixed";
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    buttonElement.textContent = 'কপি হয়েছে!';
+                    setTimeout(() => { buttonElement.textContent = originalText; }, 2000);
+                }
+            } catch (err) {
+                console.error('Fallback: Unable to copy', err);
+                alert('দুঃখিত, কপি করা সম্ভব হয়নি।');
+            }
+            document.body.removeChild(tempTextArea);
+        }
+
+        function copyTextToClipboard(text, buttonElement, originalText) {
+            if (!navigator.clipboard) {
+                fallbackCopyTextToClipboard(text, buttonElement, originalText);
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                buttonElement.textContent = 'কপি হয়েছে!';
+                setTimeout(() => { buttonElement.textContent = originalText; }, 2000);
+            }).catch(err => {
+                console.error('Async: Could not copy text: ', err);
+                fallbackCopyTextToClipboard(text, buttonElement, originalText);
+            });
+        }
+        
         sliderTrack.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
         sliderTrack.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); });
         menuBtn.addEventListener('click', openSidebar);
@@ -512,10 +548,7 @@
             } catch (error) { console.error("Error fetching order status:", error); orderStatusResultDiv.innerHTML = `<p style="color: var(--danger-accent);">An error occurred.</p>`; }
         });
         copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(paymentTargetNumberInput.value).then(() => {
-                copyBtn.textContent = 'কপি হয়েছে!';
-                setTimeout(() => { copyBtn.textContent = 'কপি'; }, 2000);
-            });
+            copyTextToClipboard(paymentTargetNumberInput.value, copyBtn, 'কপি');
         });
         document.getElementById('confirm-order-btn').addEventListener('click', async () => {
             const personalInfo = { firstName: document.getElementById('first-name').value.trim(), lastName: document.getElementById('last-name').value.trim(), email: document.getElementById('email').value.trim() };
@@ -533,10 +566,8 @@
             } finally { confirmBtn.disabled = false; confirmBtn.textContent = 'Confirm'; }
         });
         copyOrderIdBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(modalOrderIdText.textContent.replace('Order ID: ', '')).then(() => {
-                copyOrderIdBtn.textContent = 'কপি হয়েছে!';
-                setTimeout(() => { copyOrderIdBtn.textContent = 'কপি করুন'; }, 2000);
-            });
+            const orderIdToCopy = modalOrderIdText.textContent.replace('Order ID: ', '');
+            copyTextToClipboard(orderIdToCopy, copyOrderIdBtn, 'কপি করুন');
         });
         closeModalBtn.addEventListener('click', () => {
             successModal.classList.remove('show');
