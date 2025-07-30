@@ -59,7 +59,11 @@
         .slide.active { opacity: 1; }
         .slide img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
 
-        .game-section{padding:40px 0} .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px} .game-card{background:var(--card-background);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 5px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;cursor:pointer} .game-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 15px 30px rgba(0,0,0,.4),0 0 50px var(--secondary-color)} .card-banner img{width:100%;height:110px;object-fit:cover;display:block} .card-content{padding:15px;text-align:center} .card-content h3{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .form-container{background:var(--card-background);border-radius:12px;padding:25px;margin-bottom:30px;max-width:700px;margin-left:auto;margin-right:auto} .form-group{margin-bottom:20px} .form-group label{display:block;font-size:1.1rem;font-weight:500;margin-bottom:10px} .form-group input, .form-group select {width:100%;padding:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-color);font-size:1rem;}
+        .game-section{padding:40px 0} .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px} 
+        .game-card{background:var(--card-background);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 5px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;cursor:pointer; display: none;} 
+        .game-card.visible { display: block; }
+        .game-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 15px 30px rgba(0,0,0,.4),0 0 50px var(--secondary-color)} 
+        .card-banner img{width:100%;height:110px;object-fit:cover;display:block} .card-content{padding:15px;text-align:center} .card-content h3{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .form-container{background:var(--card-background);border-radius:12px;padding:25px;margin-bottom:30px;max-width:700px;margin-left:auto;margin-right:auto} .form-group{margin-bottom:20px} .form-group label{display:block;font-size:1.1rem;font-weight:500;margin-bottom:10px} .form-group input, .form-group select {width:100%;padding:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-color);font-size:1rem;}
         
         .package-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px} 
         .package-card{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition: all .3s ease} 
@@ -250,6 +254,7 @@
         const copyOrderIdBtn = document.getElementById('copy-order-id-btn');
         const closeModalBtn = document.getElementById('close-modal-btn');
         
+        let allGamesData = [];
         let selectedPackageInfo = null;
         let selectedPaymentMethod = null;
         let orderData = {};
@@ -263,43 +268,52 @@
         function handleSwipe() { const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) { showSlide((currentSlide + 1) % slides.length); startSlideshow(); } else if (touchEndX - touchStartX > swipeThreshold) { showSlide((currentSlide - 1 + slides.length) % slides.length); startSlideshow(); } }
         async function loadNotice() { try { const noticeDocRef = doc(db, "settings", "notice"); const noticeDocSnap = await getDoc(noticeDocRef); noticeBarText.textContent = (noticeDocSnap.exists() && noticeDocSnap.data().text) ? noticeDocSnap.data().text : "আমাদের ওয়েবসাইটে আপনাকে স্বাগতম!"; } catch (error) { console.error("Error loading notice:", error); noticeBarText.textContent = "নোটিশ লোড করা সম্ভব হয়নি।"; } }
 
-        async function loadGames(categoryId) {
+        function renderGames(gamesToRender) {
+            gameGrid.innerHTML = '';
+            if (gamesToRender.length === 0) {
+                gameGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem;">এই ক্যাটাগরিতে কোনো আইটেম পাওয়া যায়নি।</p>`;
+                return;
+            }
+            
+            gamesToRender.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card visible';
+                gameCard.dataset.gameId = game.id;
+                gameCard.innerHTML = `<div class="card-banner"><img src="${game.imageUrl}" alt="${game.name}"></div><div class="card-content"><h3>${game.name}</h3></div>`;
+                gameGrid.appendChild(gameCard);
+            });
+        }
+        
+        function filterGamesByCategory(categoryId) {
+            const filteredGames = allGamesData.filter(game => game.categoryId === categoryId);
+            renderGames(filteredGames);
+        }
+        
+        async function loadAndCacheAllGames() {
             gameGrid.innerHTML = '<h4 style="grid-column: 1 / -1; text-align: center;">Loading Items...</h4>';
             try {
-                const gamesQuery = query(collection(db, "games"), where("categoryId", "==", categoryId));
+                const gamesQuery = query(collection(db, "games"), orderBy("serial"));
                 const gameSnapshot = await getDocs(gamesQuery);
-                gameGrid.innerHTML = '';
-                
-                if (gameSnapshot.empty) {
-                    gameGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem;">এই ক্যাটাগরিতে কোনো আইটেম পাওয়া যায়নি।</p>`;
-                    return;
-                }
+                allGamesData = [];
                 gameSnapshot.forEach((doc) => {
-                    const game = doc.data();
-                    const gameCard = document.createElement('div');
-                    gameCard.className = 'game-card';
-                    gameCard.dataset.gameId = doc.id;
-                    gameCard.innerHTML = `<div class="card-banner"><img src="${game.imageUrl}" alt="${game.name}"></div><div class="card-content"><h3>${game.name}</h3></div>`;
-                    gameGrid.appendChild(gameCard);
+                    allGamesData.push({ id: doc.id, ...doc.data() });
                 });
             } catch (error) {
-                console.error(`Error loading games for category ${categoryId}:`, error);
+                console.error("Error loading games:", error);
                 gameGrid.innerHTML = `<p>আইটেম লোড করা সম্ভব হয়নি।</p>`;
             }
         }
 
-        async function loadCategoriesAndInitialGames() {
+        async function loadCategoriesAndInitialFilter() {
             categoryTabsContainer.innerHTML = '<h4>Loading Categories...</h4>';
             try {
                 const categorySnapshot = await getDocs(query(collection(db, "categories"), orderBy("serial")));
                 categoryTabsContainer.innerHTML = ''; 
-                
                 if (categorySnapshot.empty) {
                     categoryTabsContainer.innerHTML = 'No categories found.';
                     gameGrid.innerHTML = '';
                     return;
                 }
-
                 let isFirst = true;
                 let firstCategoryId = null;
 
@@ -309,7 +323,6 @@
                     button.className = 'category-tab-btn';
                     button.textContent = category.name;
                     button.dataset.categoryId = doc.id;
-                    
                     if (isFirst) {
                         button.classList.add('active');
                         firstCategoryId = doc.id;
@@ -319,9 +332,8 @@
                 });
 
                 if (firstCategoryId) {
-                    await loadGames(firstCategoryId);
+                    filterGamesByCategory(firstCategoryId);
                 }
-
             } catch (error) {
                 console.error("Error loading categories:", error);
                 categoryTabsContainer.innerHTML = '<p>ক্যাটাগরি লোড করা সম্ভব হয়নি।</p>';
@@ -372,7 +384,8 @@
                 slides = document.querySelectorAll('#slider-track .slide');
                 if(slides.length > 0) { showSlide(0); startSlideshow(); }
             } catch (error) { console.error("Error loading banners:", error); }
-            await loadCategoriesAndInitialGames();
+            await loadAndCacheAllGames();
+            await loadCategoriesAndInitialFilter();
         }
 
         async function showPackagePage(gameId) {
@@ -381,7 +394,12 @@
                 const gameDoc = await getDoc(doc(db, "games", gameId)); if (!gameDoc.exists()) { packageGameTitle.textContent = "Game not found"; return; }
                 const gameData = gameDoc.data(); orderData.game = gameData.name; packageGameTitle.textContent = `${gameData.name} Packages`;
                 if (gameData.versions && gameData.versions.length > 0) { let versionHtml = `<div class="form-group"><label for="game-version">ভার্সন বেছে নিন</label><select id="game-version" required>`; gameData.versions.forEach(version => { versionHtml += `<option value="${version}">${version}</option>`; }); versionHtml += `</select></div>`; dynamicInputsContainer.innerHTML += versionHtml; }
-                switch (gameData.loginType) { case 'gmail': dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="login-email">আপনার গেমের ইমেইল দিন</label><input type="email" id="login-email" placeholder="এখানে ইমেইল লিখুন" required></div>`; break; case 'playerId': default: dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="player-id">আপনার প্লেয়ার আইডি দিন</label><input type="text" id="player-id" placeholder="এখানে আইডি লিখুন" required></div>`; break; }
+                switch (gameData.loginType) {
+                    case 'gmail': dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="login-email">আপনার গেমের ইমেইল দিন</label><input type="email" id="login-email" placeholder="এখানে ইমেইল লিখুন" required></div>`; break;
+                    case 'playerId': default: dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="player-id">আপনার প্লেয়ার আইডি দিন</label><input type="text" id="player-id" placeholder="এখানে আইডি লিখুন" required></div>`; break;
+                }
+                if (gameData.passwordField === 'required') { dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="login-password">পাসওয়ার্ড দিন</label><input type="password" id="login-password" placeholder="এখানে পাসওয়ার্ড লিখুন" required></div>`; }
+
                 const packagesSnapshot = await getDocs(query(collection(db, "games", gameId, "packages"), orderBy("serial")));
                 packageGrid.innerHTML = ''; selectedPackageInfo = null; document.getElementById('checkout-btn').disabled = true;
                 packagesSnapshot.forEach((pkgDoc) => {
@@ -396,7 +414,6 @@
         function initializeDraggableButton() {
             const button = document.getElementById('floating-contact-btn');
             let isDragging = false, hasMoved = false, startX, startY, initialX, initialY;
-
             function onDragStart(e) {
                 hasMoved = false; isDragging = true; button.classList.add('grabbing');
                 const event = e.type === 'touchstart' ? e.touches[0] : e;
@@ -407,7 +424,6 @@
                 document.addEventListener('touchmove', onDragMove, { passive: false });
                 document.addEventListener('touchend', onDragEnd);
             }
-
             function onDragMove(e) {
                 if (!isDragging) return; e.preventDefault();
                 const moveEvent = e.type === 'touchmove' ? e.touches[0] : e;
@@ -419,7 +435,6 @@
                 button.style.left = `${newX}px`; button.style.top = `${newY}px`;
                 button.style.right = 'auto'; button.style.bottom = 'auto';
             }
-
             function onDragEnd() {
                 isDragging = false; button.classList.remove('grabbing');
                 document.removeEventListener('mousemove', onDragMove);
@@ -446,7 +461,7 @@
             if (e.target.classList.contains('category-tab-btn')) {
                 document.querySelectorAll('.category-tab-btn').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
-                loadGames(e.target.dataset.categoryId);
+                filterGamesByCategory(e.target.dataset.categoryId);
             }
         });
         paymentOptionsContainer.addEventListener('click', async (e) => {
@@ -468,6 +483,8 @@
             const playerIdInput = document.getElementById('player-id'); const loginEmailInput = document.getElementById('login-email');
             if (playerIdInput) { if (!playerIdInput.value.trim()) { alert('দয়া করে আপনার প্লেয়ার আইডি দিন।'); allValid = false; return; } orderData.loginInfo.playerId = playerIdInput.value.trim(); }
             else if (loginEmailInput) { if (!loginEmailInput.value.trim()) { alert('দয়া করে আপনার ইমেইল দিন।'); allValid = false; return; } orderData.loginInfo.email = loginEmailInput.value.trim(); }
+            const loginPasswordInput = document.getElementById('login-password');
+            if (loginPasswordInput) { if (!loginPasswordInput.value.trim()) { alert('দয়া করে পাসওয়ার্ড দিন।'); allValid = false; return; } orderData.loginInfo.password = loginPasswordInput.value.trim(); }
             if (!selectedPackageInfo) { alert('দয়া করে একটি প্যাকেজ বেছে নিন।'); allValid = false; return; }
             if (allValid) { document.getElementById('payment-instruction-label').textContent = `${selectedPackageInfo.price}৳ টাকা এই নাম্বারে সেন্ড মানি করুন`; showPage('checkout-page'); }
         });
@@ -481,14 +498,16 @@
             } catch (error) { console.error("Error fetching order status:", error); orderStatusResultDiv.innerHTML = `<p style="color: var(--danger-accent);">An error occurred.</p>`; }
         });
         copyBtn.addEventListener('click', () => {
-            const numberToCopy = paymentTargetNumberInput.value; const tempTextArea = document.createElement('textarea'); tempTextArea.value = numberToCopy; document.body.appendChild(tempTextArea); tempTextArea.select(); document.execCommand('copy'); document.body.removeChild(tempTextArea);
-            copyBtn.textContent = 'কপি হয়েছে!'; setTimeout(() => { copyBtn.textContent = 'কপি'; }, 2000);
+            navigator.clipboard.writeText(paymentTargetNumberInput.value).then(() => {
+                copyBtn.textContent = 'কপি হয়েছে!';
+                setTimeout(() => { copyBtn.textContent = 'কপি'; }, 2000);
+            });
         });
         document.getElementById('confirm-order-btn').addEventListener('click', async () => {
             const personalInfo = { firstName: document.getElementById('first-name').value.trim(), lastName: document.getElementById('last-name').value.trim(), email: document.getElementById('email').value.trim() };
             const paymentInfo = { number: document.getElementById('payment-number').value.trim(), trxId: document.getElementById('trx-id').value.trim() };
             if (!personalInfo.firstName || !personalInfo.email || !selectedPaymentMethod || !paymentInfo.number || !paymentInfo.trxId) { alert("Please fill all required fields."); return; }
-            const newOrderData = { game: orderData.game, gameVersion: orderData.gameVersion || null, loginInfo: orderData.loginInfo, packageName: selectedPackageInfo.name, price: selectedPackageInfo.price, customerName: `${personalInfo.firstName} ${personalInfo.lastName}`, customerEmail: personalInfo.email, paymentMethod: selectedPaymentMethod, paymentNumber: paymentInfo.number, transactionId: paymentInfo.trxId, status: 'Pending', orderDate: serverTimestamp() };
+            const newOrderData = { ...orderData, packageName: selectedPackageInfo.name, price: selectedPackageInfo.price, customerName: `${personalInfo.firstName} ${personalInfo.lastName}`, customerEmail: personalInfo.email, paymentMethod: selectedPaymentMethod, paymentNumber: paymentInfo.number, transactionId: paymentInfo.trxId, status: 'Pending', orderDate: serverTimestamp() };
             const confirmBtn = document.getElementById('confirm-order-btn'); confirmBtn.disabled = true; confirmBtn.textContent = 'Processing...';
             try {
                 const counterRef = doc(db, "counters", "orderCounter");
@@ -500,8 +519,10 @@
             } finally { confirmBtn.disabled = false; confirmBtn.textContent = 'Confirm'; }
         });
         copyOrderIdBtn.addEventListener('click', () => {
-            const orderIdToCopy = modalOrderIdText.textContent.replace('Order ID: ', ''); const tempTextArea = document.createElement('textarea'); tempTextArea.value = orderIdToCopy; document.body.appendChild(tempTextArea); tempTextArea.select(); document.execCommand('copy'); document.body.removeChild(tempTextArea);
-            copyOrderIdBtn.textContent = 'কপি হয়েছে!'; setTimeout(() => { copyOrderIdBtn.textContent = 'কপি করুন'; }, 2000);
+            navigator.clipboard.writeText(modalOrderIdText.textContent.replace('Order ID: ', '')).then(() => {
+                copyOrderIdBtn.textContent = 'কপি হয়েছে!';
+                setTimeout(() => { copyOrderIdBtn.textContent = 'কপি করুন'; }, 2000);
+            });
         });
         closeModalBtn.addEventListener('click', () => {
             successModal.classList.remove('show');
