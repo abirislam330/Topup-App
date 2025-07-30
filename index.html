@@ -11,7 +11,7 @@
 
         :root {
             --primary-color: #6d28d9; --secondary-color: #db2777; --card-background: rgba(31, 41, 55, 0.5); 
-            --text-color: #f3f4f6; --sidebar-width: 280px;
+            --text-color: #f3f4f6; --sidebar-width: 280px; --success-color: #4ade80;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: var(--text-color); min-height: 100vh; overflow-x: hidden; }
@@ -23,8 +23,9 @@
         .main-header{padding:10px 0;position:sticky;top:0;z-index:100;background:rgba(17,24,39,.6);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1)}
         .navbar{display:flex;justify-content:space-between;align-items:center}
         
-        .logo{ font-family: 'Audiowide', sans-serif; font-size:1.8rem; font-weight:700; letter-spacing:1px; color: #FFC300; text-shadow: 0 0 15px rgba(255, 195, 0, 0.7); }
-        .logo span { color: #E60023; text-shadow: 0 0 15px rgba(230, 0, 35, 0.7); }
+        .logo, #sidebar .sidebar-logo { font-family: 'Audiowide', sans-serif; font-size: 2.2rem; font-weight: 700; letter-spacing: 1.5px; color: var(--primary-color); text-shadow: 0 0 2px #fff, 0 0 6px #fff, 0 0 12px var(--primary-color), 0 0 20px var(--primary-color), 0 0 25px var(--primary-color); transform: skew(-3deg); }
+        .logo span, #sidebar .sidebar-logo span { color: var(--secondary-color); text-shadow: 0 0 2px #fff, 0 0 6px #fff, 0 0 12px var(--secondary-color), 0 0 20px var(--secondary-color), 0 0 25px var(--secondary-color); }
+        #sidebar .sidebar-logo { font-family: 'Orbitron', sans-serif; text-align: center; margin-bottom: 40px; transform: skew(0); }
         
         .menu-btn{background:0 0;border:none;cursor:pointer;padding:5px}
         .menu-btn svg{stroke:var(--text-color);transition:stroke .3s ease; width:28px; height:28px;}
@@ -38,9 +39,6 @@
         #sidebar .close-sidebar-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; }
         #sidebar .close-sidebar-btn svg { stroke: var(--text-color); width: 24px; height: 24px;}
         
-        #sidebar .sidebar-logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 40px; color: #FFC300; text-shadow: 0 0 15px rgba(255, 195, 0, 0.7); }
-        #sidebar .sidebar-logo span { color: #E60023; text-shadow: 0 0 15px rgba(230, 0, 35, 0.7); }
-        
         #sidebar a { display: block; color: var(--text-color); text-decoration: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; transition: background-color 0.3s; }
         #sidebar a:hover { background-color: var(--primary-color); }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; }
@@ -50,50 +48,98 @@
         #order-status-result span { font-weight: 600; color: #a5b4fc; }
         .status-pending { color: #facc15 !important; } .status-processing { color: #60a5fa !important; } .status-completed { color: #4ade80 !important; } .status-cancelled { color: #f87171 !important; }
 
-        .notice-bar { width: 100%; background-color: #ffc107; color: #212529; padding: 8px 0; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .notice-bar { width: 100%; background: linear-gradient(90deg, #E60023, #FFC300); color: #fff; padding: 8px 0; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .notice-bar p { display: inline-block; padding-left: 100%; animation: scroll-notice 30s linear infinite; font-weight: 500; }
         @keyframes scroll-notice { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .news-slider-section { padding-top: 20px; }
-
         .news-slider { width: 100%; height: 250px; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.4); position: relative; }
         .slider-track { width: 100%; height: 100%; cursor: grab; }
         .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
         .slide.active { opacity: 1; }
         .slide img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
 
-        .game-section{padding:40px 0} .section-title{text-align:center;font-size:2.5rem;margin-bottom:40px;font-weight:600} .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px} .game-card{background:var(--card-background);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 5px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;cursor:pointer} .game-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 15px 30px rgba(0,0,0,.4),0 0 50px var(--secondary-color)} .card-banner img{width:100%;height:110px;object-fit:cover;display:block} .card-content{padding:15px;text-align:center} .card-content h3{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .form-container{background:var(--card-background);border-radius:12px;padding:25px;margin-bottom:30px;max-width:700px;margin-left:auto;margin-right:auto} .form-group{margin-bottom:20px} .form-group label{display:block;font-size:1.1rem;font-weight:500;margin-bottom:10px} .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="tel"] {width:100%;padding:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-color);font-size:1rem;}
+        .game-section{padding:40px 0} .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px} .game-card{background:var(--card-background);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 5px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;cursor:pointer} .game-card:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 15px 30px rgba(0,0,0,.4),0 0 50px var(--secondary-color)} .card-banner img{width:100%;height:110px;object-fit:cover;display:block} .card-content{padding:15px;text-align:center} .card-content h3{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .form-container{background:var(--card-background);border-radius:12px;padding:25px;margin-bottom:30px;max-width:700px;margin-left:auto;margin-right:auto} .form-group{margin-bottom:20px} .form-group label{display:block;font-size:1.1rem;font-weight:500;margin-bottom:10px} .form-group input, .form-group select {width:100%;padding:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-color);font-size:1rem;}
         
-        /* --- PACKAGE GRID CSS --- */
         .package-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px} 
         .package-card{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition: all .3s ease} 
         .package-card:hover{transform:translateY(-5px);border-color:var(--secondary-color)} 
-        
-        /* ## কোড আপডেট: সিলেক্টেড প্যাকেজের স্টাইল পরিবর্তন করা হয়েছে ## */
-        .package-card.selected{
-            background: var(--primary-color);
-            border-color: #facc15;
-            box-shadow:0 0 15px var(--primary-color);
-            transform: translateY(-5px);
-        }
-        
+        .package-card.selected{ background: linear-gradient(90deg, #E60023, #FFC300); border-color: #FFC300; box-shadow: 0 0 15px #FFC300; transform: translateY(-5px); }
         .package-name{font-size:1rem; font-weight:600; line-height: 1.3; color: var(--text-color); transition: color .3s ease;} 
-        .package-price{font-size:0.9rem; color:#ffc107; margin-top:4px; transition: color .3s ease;} 
+        .package-card.selected .package-name { color: #ffffff; }
+        .package-price { font-size: 1rem; color: var(--success-color); margin-top: 4px; font-weight: 600; transition: color .3s ease; }
+        .package-card.selected .package-price { color: #ffffff; }
         
-        /* ## কোড আপডেট: সিলেক্টেড প্যাকেজের লেখার রঙ পরিবর্তন করা হয়েছে ## */
-        .package-card.selected .package-name,
-        .package-card.selected .package-price {
-            color: #ffffff;
-        }
-        /* --- END OF PACKAGE GRID CSS --- */
-
-        .payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .payment-option{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:10px;padding:15px;text-align:center;cursor:pointer;transition:border-color .3s ease} .payment-option:hover{border-color:var(--secondary-color)} .payment-option.selected{border-color:var(--primary-color);box-shadow:0 0 15px var(--primary-color)} .payment-option img{height:30px; max-width: 100%;} .payment-option input[type="radio"]{display:none} #payment-instruction-wrapper, #payment-details {display: none;margin-top: 20px;padding-top: 20px;border-top: 1px solid rgba(255, 255, 255, 0.1);} .copyable-input-wrapper { display: flex; align-items: center; gap: 10px; } .copyable-input-wrapper input { cursor: default; } #copy-btn { padding: 10px 15px; background: var(--secondary-color); border: none; border-radius: 8px; color: white; font-weight: 500; cursor: pointer; white-space: nowrap; }
+        .payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .payment-option{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.1);border-radius:10px;padding:15px;text-align:center;cursor:pointer;transition: all .3s ease} 
+        .payment-option:hover{border-color:var(--secondary-color)} 
+        .payment-option.selected{border-color:var(--primary-color);box-shadow:0 0 15px var(--primary-color)} 
+        .payment-option img{height:30px; max-width: 100%; object-fit: contain;} .payment-option input[type="radio"]{display:none}
+        .payment-option[data-method="bkash"].selected { border-color: #e2136e; box-shadow: 0 0 15px #e2136e; }
+        .payment-option[data-method="nagad"].selected { border-color: #f47521; box-shadow: 0 0 15px #f47521; }
+        .payment-option[data-method="rocket"].selected { border-color: #8a2be2; box-shadow: 0 0 15px #8a2be2; }
+        
+        #payment-instruction-wrapper, #payment-details {display: none;margin-top: 20px;padding-top: 20px;border-top: 1px solid rgba(255, 255, 255, 0.1);} .copyable-input-wrapper { display: flex; align-items: center; gap: 10px; } .copyable-input-wrapper input { cursor: default; } #copy-btn { padding: 10px 15px; background: var(--secondary-color); border: none; border-radius: 8px; color: white; font-weight: 500; cursor: pointer; white-space: nowrap; }
         
         .action-btn{width:100%;padding:15px;margin-top:10px;background:linear-gradient(90deg, #E60023, #FFC300);border:none;border-radius:8px;color:#fff;font-size:1.2rem;font-weight:600;cursor:pointer;transition:transform .3s ease} 
-        
         .action-btn:hover{transform:scale(1.02)}
         .action-btn:disabled { background: var(--card-background); cursor: not-allowed; opacity: 0.5; }
         footer{text-align:center;padding:20px 0;margin-top:50px;border-top:1px solid rgba(255,255,255,.1);color:#9ca3af}
+
+        .category-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .category-tab-btn { background-color: transparent; border: 2px solid var(--primary-color); color: var(--text-color); padding: 10px 30px; border-radius: 50px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.3s ease; }
+        .category-tab-btn:hover { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .category-tab-btn.active { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; border-color: transparent; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: var(--card-background); padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,.1); animation: modal-pop 0.3s ease-out; }
+        @keyframes modal-pop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal-icon { color: var(--success-color); margin-bottom: 20px; }
+        .modal-icon svg { width: 60px; height: 60px; }
+        .modal-content h2 { font-size: 1.8rem; margin-bottom: 15px; }
+        .modal-content p { color: #d1d5db; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.5; }
+        .order-id-wrapper { display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; margin-bottom: 25px; }
+        .order-id-text { font-weight: bold; font-size: 1.2rem; color: #e5e7eb; margin-right: 15px; }
+        .copy-order-id-btn { background: var(--secondary-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .close-modal-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #E60023, #FFC300); color: #fff; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease-in-out; }
+        .close-modal-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+        
+        #floating-contact-btn {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            cursor: grab;
+            transition: transform 0.2s ease-in-out;
+            animation: pulse-animation 2.5s infinite;
+        }
+        #floating-contact-btn:hover {
+            transform: scale(1.1);
+            animation: none;
+        }
+        #floating-contact-btn.grabbing {
+            cursor: grabbing;
+            animation: none;
+        }
+        #floating-contact-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(219, 39, 119, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0); }
+        }
+
     </style>
 </head>
 <body>
@@ -111,25 +157,24 @@
         </nav>
     </header>
 
-    <div class="notice-bar">
-        <p>Loading notice...</p>
-    </div>
+    <div class="notice-bar"><p>Loading notice...</p></div>
 
     <main class="container">
         <div id="homepage" class="page active">
             <section class="news-slider-section"><div class="news-slider"><div class="slider-track" id="slider-track"></div></div></section>
-            <section class="game-section"><h2 class="section-title">All Item</h2><div class="game-grid" id="game-grid"></div></section>
+            <section class="game-section">
+                <div class="category-tabs" id="category-tabs"></div>
+                <div class="game-grid" id="game-grid"></div>
+            </section>
         </div>
-
         <div id="package-page" class="page">
             <div class="page-header"><button id="back-to-home-from-pkg" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button><h2 id="package-game-title" class="page-title"></h2></div>
             <div class="form-container">
-                <div class="form-group"><label for="player-id">আপনার প্লেয়ার আইডি দিন</label><input type="text" id="player-id" placeholder="এখানে আইডি লিখুন"></div>
+                <div id="dynamic-inputs-container"></div>
                 <div class="form-group"><label>একটি প্যাকেজ বেছে নিন</label><div id="package-grid" class="package-grid"></div></div>
                 <button id="checkout-btn" class="action-btn">অর্ডার করুন</button>
             </div>
         </div>
-        
         <div id="checkout-page" class="page">
             <div class="page-header"><button id="back-to-packages" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button><h2 class="page-title">অর্ডার ডিটেইলস</h2></div>
             <div class="form-container">
@@ -138,16 +183,12 @@
                 <div class="form-group"><label for="email">Email</label><input type="email" id="email" placeholder="আপনার ইমেইল অ্যাড্রেস"></div>
                 <div class="form-group"><label>পেমেন্ট মেথড</label><div class="payment-options"></div></div>
                 <div id="payment-instruction-wrapper">
-                    <div class="form-group">
-                        <label id="payment-instruction-label">এই নাম্বারে টাকা সেন্ড মানি করুন</label>
-                        <div class="copyable-input-wrapper"><input type="text" id="payment-target-number" value="Loading..." readonly><button type="button" id="copy-btn">কপি</button></div>
-                    </div>
+                    <div class="form-group"><label id="payment-instruction-label">এই নাম্বারে টাকা সেন্ড মানি করুন</label><div class="copyable-input-wrapper"><input type="text" id="payment-target-number" value="Loading..." readonly><button type="button" id="copy-btn">কপি</button></div></div>
                 </div>
                 <div id="payment-details"><div class="form-group"><label for="payment-number">আপনার পেমেন্ট নম্বর</label><input type="tel" id="payment-number" placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন"></div><div class="form-group"><label for="trx-id">ট্রানজেকশন আইডি (TrxID)</label><input type="text" id="trx-id" placeholder="পেমেন্টের ট্রানজেকশন আইডি"></div></div>
                 <button id="confirm-order-btn" class="action-btn">Confirm</button>
             </div>
         </div>
-
         <div id="order-status-page" class="page">
             <div class="page-header"><button id="back-to-home-from-status" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button><h2 class="page-title">Order Status</h2></div>
             <div class="form-container">
@@ -157,23 +198,38 @@
             </div>
         </div>
     </main>
-    
     <footer><p>© 2025 Eagle Zone. সর্বস্বত্ব সংরক্ষিত।</p></footer>
+    <div id="order-success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+            <h2>অর্ডার সম্পন্ন হয়েছে!</h2>
+            <p>আপনার অর্ডারটি সফলভাবে জমা হয়েছে। অল্প সময়ের মধ্যেই আপনার অর্ডারটি কমপ্লিট করা হবে।</p>
+            <div class="order-id-wrapper"><span class="order-id-text" id="modal-order-id-text"></span><button class="copy-order-id-btn" id="copy-order-id-btn">কপি করুন</button></div>
+            <button class="close-modal-btn" id="close-modal-btn">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <a id="floating-contact-btn" href="#" target="_blank" title="Contact Us" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20.5 3.5C22.43 5.43 23.5 7.96 23.5 10.75C23.5 16.31 19.31 20.5 13.75 20.5C13.08 20.5 12.42 20.45 11.78 20.35L6.25 22.25L8.15 16.72C6.3 15.03 5.5 12.96 5.5 10.75C5.5 5.19 9.69 1 15.25 1C17.04 1 18.83 1.5 20.5 2.5V3.5Z"/>
+        </svg>
+    </a>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-        import { getFirestore, collection, serverTimestamp, getDocs, doc, getDoc, query, orderBy, runTransaction, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+        import { getFirestore, collection, serverTimestamp, getDocs, doc, getDoc, query, orderBy, runTransaction, setDoc, where } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAAMf_SeR061JLxfKorrcgFROawnDPDG_w", authDomain: "topup-2ecf4.firebaseapp.com", projectId: "topup-2ecf4", storageBucket: "topup-2ecf4.appspot.com", messagingSenderId: "48541449027", appId: "1:48541449027:web:080401b897cc0748dccdf6" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // DOM Elements
         const pages = document.querySelectorAll('.page');
         const sliderTrack = document.getElementById('slider-track');
         const gameGrid = document.getElementById('game-grid');
         const packageGameTitle = document.getElementById('package-game-title');
         const packageGrid = document.getElementById('package-grid');
-        const playerIdInput = document.getElementById('player-id');
+        const dynamicInputsContainer = document.getElementById('dynamic-inputs-container');
         const paymentOptionsContainer = document.querySelector('.payment-options');
         const paymentInstructionWrapper = document.getElementById('payment-instruction-wrapper');
         const paymentDetailsDiv = document.getElementById('payment-details');
@@ -188,136 +244,196 @@
         const orderIdInput = document.getElementById('order-id-input');
         const orderStatusResultDiv = document.getElementById('order-status-result');
         const noticeBarText = document.querySelector('.notice-bar p');
-
+        const categoryTabsContainer = document.getElementById('category-tabs');
+        const successModal = document.getElementById('order-success-modal');
+        const modalOrderIdText = document.getElementById('modal-order-id-text');
+        const copyOrderIdBtn = document.getElementById('copy-order-id-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        
         let selectedPackageInfo = null;
         let selectedPaymentMethod = null;
         let orderData = {};
-        
-        let slideInterval;
-        let slides = [];
-        let currentSlide = 0;
-        let touchStartX = 0;
-        let touchEndX = 0;
+        let slideInterval, slides = [], currentSlide = 0, touchStartX = 0, touchEndX = 0;
 
         function showPage(pageId) { window.scrollTo(0, 0); pages.forEach(page => page.classList.remove('active')); document.getElementById(pageId)?.classList.add('active'); }
         function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('show'); document.body.classList.add('sidebar-open'); }
         function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); document.body.classList.remove('sidebar-open'); }
+        function showSlide(index) { if (slides.length === 0) return; slides.forEach(slide => slide.classList.remove('active')); currentSlide = index; slides[currentSlide].classList.add('active'); }
+        function startSlideshow() { if (slides.length <= 1) return; clearInterval(slideInterval); slideInterval = setInterval(() => { showSlide((currentSlide + 1) % slides.length); }, 5000); }
+        function handleSwipe() { const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) { showSlide((currentSlide + 1) % slides.length); startSlideshow(); } else if (touchEndX - touchStartX > swipeThreshold) { showSlide((currentSlide - 1 + slides.length) % slides.length); startSlideshow(); } }
+        async function loadNotice() { try { const noticeDocRef = doc(db, "settings", "notice"); const noticeDocSnap = await getDoc(noticeDocRef); noticeBarText.textContent = (noticeDocSnap.exists() && noticeDocSnap.data().text) ? noticeDocSnap.data().text : "আমাদের ওয়েবসাইটে আপনাকে স্বাগতম!"; } catch (error) { console.error("Error loading notice:", error); noticeBarText.textContent = "নোটিশ লোড করা সম্ভব হয়নি।"; } }
 
-        function showSlide(index) {
-            if (slides.length === 0) return;
-            slides.forEach(slide => slide.classList.remove('active'));
-            currentSlide = index;
-            slides[currentSlide].classList.add('active');
-        }
-
-        function startSlideshow() {
-            if (slides.length <= 1) return;
-            clearInterval(slideInterval);
-            slideInterval = setInterval(() => {
-                const nextIndex = (currentSlide + 1) % slides.length;
-                showSlide(nextIndex);
-            }, 5000);
-        }
-
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            if (touchStartX - touchEndX > swipeThreshold) {
-                const nextIndex = (currentSlide + 1) % slides.length;
-                showSlide(nextIndex);
-                startSlideshow();
-            } else if (touchEndX - touchStartX > swipeThreshold) {
-                const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
-                showSlide(prevIndex);
-                startSlideshow();
-            }
-        }
-
-        async function loadNotice() {
+        async function loadGames(categoryId) {
+            gameGrid.innerHTML = '<h4 style="grid-column: 1 / -1; text-align: center;">Loading Items...</h4>';
             try {
-                const noticeDocRef = doc(db, "settings", "notice");
-                const noticeDocSnap = await getDoc(noticeDocRef);
-                if (noticeDocSnap.exists() && noticeDocSnap.data().text) {
-                    noticeBarText.textContent = noticeDocSnap.data().text;
-                } else {
-                    noticeBarText.textContent = "আমাদের ওয়েবসাইটে আপনাকে স্বাগতম! যেকোনো সমস্যায় আমাদের টেলিগ্রামে যোগাযোগ করুন।";
-                }
-            } catch (error) {
-                console.error("Error loading notice:", error);
-                noticeBarText.textContent = "নোটিশ লোড করা সম্ভব হয়নি।";
-            }
-        }
-
-        async function loadHomepageData() {
-            try {
-                const [bannerSnapshot, gameSnapshot] = await Promise.all([ getDocs(query(collection(db, "banners"), orderBy("createdAt", "desc"))), getDocs(query(collection(db, "games"), orderBy("name"))) ]);
-                
-                sliderTrack.innerHTML = ''; 
-                const banners = bannerSnapshot.docs.map(doc => doc.data());
-                
-                if (banners.length > 0) {
-                    banners.forEach(banner => { 
-                        const slideEl = document.createElement('div'); 
-                        slideEl.className = 'slide'; 
-                        slideEl.innerHTML = `<img src="${banner.imageUrl}" alt="News Banner">`; 
-                        sliderTrack.appendChild(slideEl); 
-                    });
-                    
-                    slides = document.querySelectorAll('#slider-track .slide');
-                    showSlide(0);
-                    startSlideshow();
-                }
-                
+                const gamesQuery = query(collection(db, "games"), where("categoryId", "==", categoryId));
+                const gameSnapshot = await getDocs(gamesQuery);
                 gameGrid.innerHTML = '';
-                gameSnapshot.forEach((doc) => { const game = doc.data(); const gameCard = document.createElement('div'); gameCard.className = 'game-card'; gameCard.dataset.gameId = doc.id; gameCard.innerHTML = `<div class="card-banner"><img src="${game.imageUrl}" alt="${game.name}"></div><div class="card-content"><h3>${game.name}</h3></div>`; gameGrid.appendChild(gameCard); });
-            } catch (error) { console.error("Error loading homepage:", error); }
+                
+                if (gameSnapshot.empty) {
+                    gameGrid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem;">এই ক্যাটাগরিতে কোনো আইটেম পাওয়া যায়নি।</p>`;
+                    return;
+                }
+                gameSnapshot.forEach((doc) => {
+                    const game = doc.data();
+                    const gameCard = document.createElement('div');
+                    gameCard.className = 'game-card';
+                    gameCard.dataset.gameId = doc.id;
+                    gameCard.innerHTML = `<div class="card-banner"><img src="${game.imageUrl}" alt="${game.name}"></div><div class="card-content"><h3>${game.name}</h3></div>`;
+                    gameGrid.appendChild(gameCard);
+                });
+            } catch (error) {
+                console.error(`Error loading games for category ${categoryId}:`, error);
+                gameGrid.innerHTML = `<p>আইটেম লোড করা সম্ভব হয়নি।</p>`;
+            }
         }
 
-        sliderTrack.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        sliderTrack.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        async function showPackagePage(gameId) {
-            packageGameTitle.textContent = "Loading..."; showPage('package-page');
+        async function loadCategoriesAndInitialGames() {
+            categoryTabsContainer.innerHTML = '<h4>Loading Categories...</h4>';
             try {
-                const gameDoc = await getDoc(doc(db, "games", gameId)); if (!gameDoc.exists()) return;
-                const gameData = gameDoc.data(); orderData.game = gameData.name; packageGameTitle.textContent = `${gameData.name} Packages`;
+                const categorySnapshot = await getDocs(query(collection(db, "categories"), orderBy("serial")));
+                categoryTabsContainer.innerHTML = ''; 
                 
-                const packagesSnapshot = await getDocs(query(collection(db, "games", gameId, "packages"), orderBy("serial")));
-                
-                packageGrid.innerHTML = ''; selectedPackageInfo = null;
-                document.getElementById('checkout-btn').disabled = true;
-                packagesSnapshot.forEach((pkgDoc) => {
-                    const pkg = pkgDoc.data(); const card = document.createElement('div'); card.className = 'package-card';
-                    card.innerHTML = `<div class="package-name">${pkg.name}</div><div class="package-price">${pkg.price} BDT</div>`;
-                    card.addEventListener('click', () => {
-                        packageGrid.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
-                        selectedPackageInfo = { ...pkg, id: pkgDoc.id };
-                        document.getElementById('checkout-btn').disabled = false;
-                    });
-                    packageGrid.appendChild(card);
+                if (categorySnapshot.empty) {
+                    categoryTabsContainer.innerHTML = 'No categories found.';
+                    gameGrid.innerHTML = '';
+                    return;
+                }
+
+                let isFirst = true;
+                let firstCategoryId = null;
+
+                categorySnapshot.forEach(doc => {
+                    const category = doc.data();
+                    const button = document.createElement('button');
+                    button.className = 'category-tab-btn';
+                    button.textContent = category.name;
+                    button.dataset.categoryId = doc.id;
+                    
+                    if (isFirst) {
+                        button.classList.add('active');
+                        firstCategoryId = doc.id;
+                        isFirst = false;
+                    }
+                    categoryTabsContainer.appendChild(button);
                 });
-            } catch (error) { console.error("Error loading packages:", error); }
+
+                if (firstCategoryId) {
+                    await loadGames(firstCategoryId);
+                }
+
+            } catch (error) {
+                console.error("Error loading categories:", error);
+                categoryTabsContainer.innerHTML = '<p>ক্যাটাগরি লোড করা সম্ভব হয়নি।</p>';
+            }
         }
 
         async function loadSettings() {
             try {
                 const settingsDoc = await getDoc(doc(db, "settings", "paymentNumbers"));
                 if (settingsDoc.exists()) {
-                    const numbers = settingsDoc.data();
-                    paymentOptionsContainer.innerHTML = Object.keys(numbers).map(key => {
-                        const logos = { bkash: 'https://i.ibb.co/JkGCyB4/bkash.png', nagad: 'https://i.ibb.co/qMsP9g0/nagad.png', rocket: 'https://i.ibb.co/9G3Y8Jt/rocket.png' };
-                        const displayName = key.charAt(0).toUpperCase() + key.slice(1);
-                        return `<label class="payment-option"><input type="radio" name="payment-method" value="${displayName}"><img src="${logos[key.toLowerCase()]}" alt="${displayName}"></label>`;
-                    }).join('');
+                    const paymentMethods = settingsDoc.data();
+                    paymentOptionsContainer.innerHTML = '';
+                    Object.keys(paymentMethods).forEach(key => {
+                        const method = paymentMethods[key];
+                        if (method.number && method.imageUrl) {
+                             const displayName = key.charAt(0).toUpperCase() + key.slice(1);
+                             const optionHTML = `<label class="payment-option" data-method="${key.toLowerCase()}"><input type="radio" name="payment-method" value="${displayName}"><img src="${method.imageUrl}" alt="${displayName}"></label>`;
+                             paymentOptionsContainer.innerHTML += optionHTML;
+                        }
+                    });
                 }
             } catch (error) { console.error("Error loading settings:", error); }
         }
 
+        async function loadContactLink() {
+            const contactBtn = document.getElementById('floating-contact-btn');
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "contactLinks"));
+                if (docSnap.exists() && docSnap.data().whatsappLink) {
+                    const link = docSnap.data().whatsappLink;
+                    if (link) {
+                        contactBtn.href = link;
+                        contactBtn.style.display = 'flex';
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading contact link:", error);
+            }
+        }
+
+        async function initializeHomepage() {
+            try {
+                const bannerSnapshot = await getDocs(query(collection(db, "banners"), orderBy("createdAt", "desc")));
+                sliderTrack.innerHTML = ''; slides = [];
+                bannerSnapshot.forEach(doc => {
+                    const banner = doc.data(); const slideEl = document.createElement('div'); slideEl.className = 'slide'; slideEl.innerHTML = `<img src="${banner.imageUrl}" alt="News Banner">`; sliderTrack.appendChild(slideEl);
+                });
+                slides = document.querySelectorAll('#slider-track .slide');
+                if(slides.length > 0) { showSlide(0); startSlideshow(); }
+            } catch (error) { console.error("Error loading banners:", error); }
+            await loadCategoriesAndInitialGames();
+        }
+
+        async function showPackagePage(gameId) {
+            packageGameTitle.textContent = "Loading..."; dynamicInputsContainer.innerHTML = ''; showPage('package-page');
+            try {
+                const gameDoc = await getDoc(doc(db, "games", gameId)); if (!gameDoc.exists()) { packageGameTitle.textContent = "Game not found"; return; }
+                const gameData = gameDoc.data(); orderData.game = gameData.name; packageGameTitle.textContent = `${gameData.name} Packages`;
+                if (gameData.versions && gameData.versions.length > 0) { let versionHtml = `<div class="form-group"><label for="game-version">ভার্সন বেছে নিন</label><select id="game-version" required>`; gameData.versions.forEach(version => { versionHtml += `<option value="${version}">${version}</option>`; }); versionHtml += `</select></div>`; dynamicInputsContainer.innerHTML += versionHtml; }
+                switch (gameData.loginType) { case 'gmail': dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="login-email">আপনার গেমের ইমেইল দিন</label><input type="email" id="login-email" placeholder="এখানে ইমেইল লিখুন" required></div>`; break; case 'playerId': default: dynamicInputsContainer.innerHTML += `<div class="form-group"><label for="player-id">আপনার প্লেয়ার আইডি দিন</label><input type="text" id="player-id" placeholder="এখানে আইডি লিখুন" required></div>`; break; }
+                const packagesSnapshot = await getDocs(query(collection(db, "games", gameId, "packages"), orderBy("serial")));
+                packageGrid.innerHTML = ''; selectedPackageInfo = null; document.getElementById('checkout-btn').disabled = true;
+                packagesSnapshot.forEach((pkgDoc) => {
+                    const pkg = pkgDoc.data(); const card = document.createElement('div'); card.className = 'package-card';
+                    card.innerHTML = `<div class="package-name">${pkg.name}</div><div class="package-price">${pkg.price} BDT</div>`;
+                    card.addEventListener('click', () => { packageGrid.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); selectedPackageInfo = { ...pkg, id: pkgDoc.id }; document.getElementById('checkout-btn').disabled = false; });
+                    packageGrid.appendChild(card);
+                });
+            } catch (error) { console.error("Error loading packages:", error); packageGameTitle.textContent = "Failed to load"; }
+        }
+
+        function initializeDraggableButton() {
+            const button = document.getElementById('floating-contact-btn');
+            let isDragging = false, hasMoved = false, startX, startY, initialX, initialY;
+
+            function onDragStart(e) {
+                hasMoved = false; isDragging = true; button.classList.add('grabbing');
+                const event = e.type === 'touchstart' ? e.touches[0] : e;
+                startX = event.clientX; startY = event.clientY;
+                initialX = button.offsetLeft; initialY = button.offsetTop;
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('mouseup', onDragEnd);
+                document.addEventListener('touchmove', onDragMove, { passive: false });
+                document.addEventListener('touchend', onDragEnd);
+            }
+
+            function onDragMove(e) {
+                if (!isDragging) return; e.preventDefault();
+                const moveEvent = e.type === 'touchmove' ? e.touches[0] : e;
+                if (!hasMoved && (Math.abs(moveEvent.clientX - startX) > 5 || Math.abs(moveEvent.clientY - startY) > 5)) { hasMoved = true; }
+                let newX = initialX + (moveEvent.clientX - startX);
+                let newY = initialY + (moveEvent.clientY - startY);
+                newX = Math.max(0, Math.min(newX, window.innerWidth - button.offsetWidth));
+                newY = Math.max(0, Math.min(newY, window.innerHeight - button.offsetHeight));
+                button.style.left = `${newX}px`; button.style.top = `${newY}px`;
+                button.style.right = 'auto'; button.style.bottom = 'auto';
+            }
+
+            function onDragEnd() {
+                isDragging = false; button.classList.remove('grabbing');
+                document.removeEventListener('mousemove', onDragMove);
+                document.removeEventListener('mouseup', onDragEnd);
+                document.removeEventListener('touchmove', onDragMove);
+                document.removeEventListener('touchend', onDragEnd);
+            }
+            button.addEventListener('mousedown', onDragStart);
+            button.addEventListener('touchstart', onDragStart, { passive: true });
+            button.addEventListener('click', (e) => { if (hasMoved) { e.preventDefault(); } });
+        }
+        
+        sliderTrack.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        sliderTrack.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); });
         menuBtn.addEventListener('click', openSidebar);
         closeSidebarBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
@@ -326,87 +442,81 @@
         document.getElementById('back-to-packages').addEventListener('click', () => showPage('package-page'));
         gameGrid.addEventListener('click', (e) => { const card = e.target.closest('.game-card'); if(card && card.dataset.gameId) showPackagePage(card.dataset.gameId); });
         navOrderStatus.addEventListener('click', (e) => { e.preventDefault(); closeSidebar(); showPage('order-status-page'); orderStatusResultDiv.style.display = 'none'; orderIdInput.value = ''; });
-
-        document.getElementById('checkout-btn').addEventListener('click', () => {
-            if (!playerIdInput.value.trim()) { alert('Please enter your player ID.'); return; }
-            if (!selectedPackageInfo) { alert('Please select a package.'); return; }
-            orderData.playerId = playerIdInput.value.trim();
-            document.getElementById('payment-instruction-label').textContent = `${selectedPackageInfo.price}৳ টাকা এই নাম্বারে সেন্ড মানি করুন`;
-            showPage('checkout-page');
+        categoryTabsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-tab-btn')) {
+                document.querySelectorAll('.category-tab-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                loadGames(e.target.dataset.categoryId);
+            }
         });
-
+        paymentOptionsContainer.addEventListener('click', async (e) => {
+            const option = e.target.closest('.payment-option'); if (!option) return;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected')); option.classList.add('selected');
+            selectedPaymentMethod = option.querySelector('input').value;
+            try { 
+                const settingsDoc = await getDoc(doc(db, "settings", "paymentNumbers")); 
+                if (settingsDoc.exists()) { 
+                    const data = settingsDoc.data(); const methodData = data[selectedPaymentMethod.toLowerCase()];
+                    paymentTargetNumberInput.value = methodData ? methodData.number : 'N/A';
+                } 
+            } catch(err) { paymentTargetNumberInput.value = 'Failed to load'; }
+            paymentInstructionWrapper.style.display = 'block'; paymentDetailsDiv.style.display = 'block';
+        });
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            orderData.loginInfo = {}; let allValid = true;
+            const versionSelect = document.getElementById('game-version'); if (versionSelect) orderData.gameVersion = versionSelect.value;
+            const playerIdInput = document.getElementById('player-id'); const loginEmailInput = document.getElementById('login-email');
+            if (playerIdInput) { if (!playerIdInput.value.trim()) { alert('দয়া করে আপনার প্লেয়ার আইডি দিন।'); allValid = false; return; } orderData.loginInfo.playerId = playerIdInput.value.trim(); }
+            else if (loginEmailInput) { if (!loginEmailInput.value.trim()) { alert('দয়া করে আপনার ইমেইল দিন।'); allValid = false; return; } orderData.loginInfo.email = loginEmailInput.value.trim(); }
+            if (!selectedPackageInfo) { alert('দয়া করে একটি প্যাকেজ বেছে নিন।'); allValid = false; return; }
+            if (allValid) { document.getElementById('payment-instruction-label').textContent = `${selectedPackageInfo.price}৳ টাকা এই নাম্বারে সেন্ড মানি করুন`; showPage('checkout-page'); }
+        });
         checkStatusBtn.addEventListener('click', async () => {
             const orderId = orderIdInput.value.trim(); if (!orderId) { alert("Please enter your Order ID."); return; }
             orderStatusResultDiv.style.display = 'block'; orderStatusResultDiv.innerHTML = `<p>Loading...</p>`;
             try {
                 const orderDocRef = doc(db, "orders", orderId); const orderDocSnap = await getDoc(orderDocRef);
-                if (orderDocSnap.exists()) {
-                    const order = orderDocSnap.data(); const statusClass = `status-${order.status.toLowerCase()}`;
-                    orderStatusResultDiv.innerHTML = `<p><strong>Player ID:</strong> <span>${order.playerId}</span></p><p><strong>Game:</strong> <span>${order.game}</span></p><p><strong>Package:</strong> <span>${order.packageName}</span></p><p><strong>Status:</strong> <span class="${statusClass}">${order.status}</span></p>`;
-                } else { orderStatusResultDiv.innerHTML = `<p style="color: var(--danger);">Order not found.</p>`; }
-            } catch (error) { console.error("Error fetching order status:", error); orderStatusResultDiv.innerHTML = `<p style="color: var(--danger);">An error occurred.</p>`; }
+                if (orderDocSnap.exists()) { const order = orderDocSnap.data(); const statusClass = `status-${order.status.toLowerCase()}`; let loginDetails = order.loginInfo.playerId ? `<strong>Player ID:</strong> <span>${order.loginInfo.playerId}</span>` : `<strong>Email:</strong> <span>${order.loginInfo.email}</span>`; orderStatusResultDiv.innerHTML = `<p>${loginDetails}</p><p><strong>Game:</strong> <span>${order.game} ${order.gameVersion || ''}</span></p><p><strong>Package:</strong> <span>${order.packageName}</span></p><p><strong>Status:</strong> <span class="${statusClass}">${order.status}</span></p>`; }
+                else { orderStatusResultDiv.innerHTML = `<p style="color: var(--danger-accent);">Order not found.</p>`; }
+            } catch (error) { console.error("Error fetching order status:", error); orderStatusResultDiv.innerHTML = `<p style="color: var(--danger-accent);">An error occurred.</p>`; }
         });
-        
-        paymentOptionsContainer.addEventListener('click', async (e) => {
-            const option = e.target.closest('.payment-option'); if (!option) return;
-            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected')); option.classList.add('selected');
-            selectedPaymentMethod = option.querySelector('input').value;
-            try {
-                const settingsDoc = await getDoc(doc(db, "settings", "paymentNumbers"));
-                if (settingsDoc.exists()) { const numbers = settingsDoc.data(); paymentTargetNumberInput.value = numbers[selectedPaymentMethod.toLowerCase()] || 'N/A'; }
-            } catch(err) { paymentTargetNumberInput.value = 'Failed to load'; }
-            paymentInstructionWrapper.style.display = 'block'; paymentDetailsDiv.style.display = 'block';
+        copyBtn.addEventListener('click', () => {
+            const numberToCopy = paymentTargetNumberInput.value; const tempTextArea = document.createElement('textarea'); tempTextArea.value = numberToCopy; document.body.appendChild(tempTextArea); tempTextArea.select(); document.execCommand('copy'); document.body.removeChild(tempTextArea);
+            copyBtn.textContent = 'কপি হয়েছে!'; setTimeout(() => { copyBtn.textContent = 'কপি'; }, 2000);
         });
-
-        copyBtn.addEventListener('click', () => { navigator.clipboard.writeText(paymentTargetNumberInput.value).then(() => { copyBtn.textContent = 'Copied!'; setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000); }, () => alert('Failed to copy.')); });
-
         document.getElementById('confirm-order-btn').addEventListener('click', async () => {
             const personalInfo = { firstName: document.getElementById('first-name').value.trim(), lastName: document.getElementById('last-name').value.trim(), email: document.getElementById('email').value.trim() };
             const paymentInfo = { number: document.getElementById('payment-number').value.trim(), trxId: document.getElementById('trx-id').value.trim() };
             if (!personalInfo.firstName || !personalInfo.email || !selectedPaymentMethod || !paymentInfo.number || !paymentInfo.trxId) { alert("Please fill all required fields."); return; }
-            
-            const newOrderData = {
-                game: orderData.game, playerId: orderData.playerId, packageName: selectedPackageInfo.name, price: selectedPackageInfo.price,
-                customerName: `${personalInfo.firstName} ${personalInfo.lastName}`, customerEmail: personalInfo.email,
-                paymentMethod: selectedPaymentMethod, paymentNumber: paymentInfo.number, transactionId: paymentInfo.trxId,
-                status: 'Pending', orderDate: serverTimestamp()
-            };
-
-            const confirmBtn = document.getElementById('confirm-order-btn');
-            confirmBtn.disabled = true; confirmBtn.textContent = 'Processing...';
-
+            const newOrderData = { game: orderData.game, gameVersion: orderData.gameVersion || null, loginInfo: orderData.loginInfo, packageName: selectedPackageInfo.name, price: selectedPackageInfo.price, customerName: `${personalInfo.firstName} ${personalInfo.lastName}`, customerEmail: personalInfo.email, paymentMethod: selectedPaymentMethod, paymentNumber: paymentInfo.number, transactionId: paymentInfo.trxId, status: 'Pending', orderDate: serverTimestamp() };
+            const confirmBtn = document.getElementById('confirm-order-btn'); confirmBtn.disabled = true; confirmBtn.textContent = 'Processing...';
             try {
                 const counterRef = doc(db, "counters", "orderCounter");
                 const newOrderId = await runTransaction(db, async (transaction) => {
-                    const counterDoc = await transaction.get(counterRef);
-                    if (!counterDoc.exists()) throw "Counter document not found!";
-                    const newId = counterDoc.data().lastId + 1;
-                    transaction.update(counterRef, { lastId: newId });
-                    const newOrderRef = doc(db, "orders", String(newId));
-                    transaction.set(newOrderRef, newOrderData);
-                    return newId;
+                    const counterDoc = await getDoc(counterRef); if (!counterDoc.exists()) throw "Counter document not found!"; const newId = (counterDoc.data().lastId || 1000) + 1; transaction.update(counterRef, { lastId: newId }); const newOrderRef = doc(db, "orders", String(newId)); transaction.set(newOrderRef, newOrderData); return newId;
                 });
-
-                alert(`আপনার অর্ডার সম্পন্ন জমা হয়েছে✅\n\nYour Player Uid: ${newOrderData.playerId}\nYour Oder ID: ${newOrderId}\n\n১২০ মিনিটের মধ্যে অর্ডার না পেলে আমাদের টেলিগ্রামে যোগাযোগ করুন।`);
-                
-                document.getElementById('checkout-page').querySelectorAll('input').forEach(input => input.value = '');
-                document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-                paymentInstructionWrapper.style.display = 'none';
-                paymentDetailsDiv.style.display = 'none';
-                showPage('homepage');
-
-            } catch (e) {
-                console.error("Transaction failed: ", e);
-                alert("দুঃখিত, একটি সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।");
-            } finally {
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'Confirm';
-            }
+                modalOrderIdText.textContent = `Order ID: ${newOrderId}`; successModal.classList.add('show');
+            } catch (e) { console.error("Transaction failed: ", e); alert("দুঃখিত, একটি সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।");
+            } finally { confirmBtn.disabled = false; confirmBtn.textContent = 'Confirm'; }
         });
-        
-        loadHomepageData();
+        copyOrderIdBtn.addEventListener('click', () => {
+            const orderIdToCopy = modalOrderIdText.textContent.replace('Order ID: ', ''); const tempTextArea = document.createElement('textarea'); tempTextArea.value = orderIdToCopy; document.body.appendChild(tempTextArea); tempTextArea.select(); document.execCommand('copy'); document.body.removeChild(tempTextArea);
+            copyOrderIdBtn.textContent = 'কপি হয়েছে!'; setTimeout(() => { copyOrderIdBtn.textContent = 'কপি করুন'; }, 2000);
+        });
+        closeModalBtn.addEventListener('click', () => {
+            successModal.classList.remove('show');
+            document.getElementById('checkout-page').querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            paymentInstructionWrapper.style.display = 'none'; paymentDetailsDiv.style.display = 'none';
+            showPage('homepage');
+        });
+
+        // --- Initial Load ---
+        initializeHomepage();
         loadSettings();
         loadNotice();
+        loadContactLink();
+        initializeDraggableButton();
         showPage('homepage');
     </script>
 </body>
